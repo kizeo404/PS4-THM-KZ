@@ -132,6 +132,13 @@
             -webkit-backdrop-filter: blur(16px);
         }
 
+        .logo-link {
+            display: inline-block;
+            line-height: 0;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
         .main-logo {
             max-width: 100%;
             width: clamp(294px, 24vw, 420px);
@@ -139,6 +146,12 @@
             display: block;
             margin: 0 auto;
             filter: drop-shadow(0 8px 22px rgba(0, 114, 206, 0.28));
+            transition: filter 0.25s ease, transform 0.25s ease;
+        }
+
+        .logo-link:hover .main-logo {
+            filter: drop-shadow(0 8px 28px rgba(0, 114, 206, 0.55));
+            transform: scale(1.015);
         }
 
         .header-meta {
@@ -693,7 +706,9 @@
 <div id="debug-console"></div>
 
 <header>
-    <img src="recursos/titulo.png" alt="PS4 Themes" class="main-logo">
+    <a href="./" id="logoLink" class="logo-link" title="Volver al inicio" aria-label="PS4 Themes - Volver al inicio y recargar la página">
+        <img src="recursos/titulo.png" alt="PS4 Themes" class="main-logo">
+    </a>
 
     <div class="header-meta">
         <div class="social-container">
@@ -963,6 +978,12 @@
     });
 
     randomBtn.addEventListener('click', shuffleThemes);
+
+    // El logo siempre recarga la página para volver al inicio.
+    document.getElementById('logoLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.reload();
+    });
 
     loadMoreBtn.addEventListener('click', () => {
         limit += 20;
