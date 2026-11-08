@@ -3,16 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="description" content="Biblioteca de temas PS4 con previews y descargas - KiZeo">
     <title>PS4 THM KZ</title>
+    <link rel="icon" href="recursos/favicon.png" type="image/png">
     <style>
+        @font-face {
+            font-family: 'Dancing Script';
+            font-style: normal;
+            font-weight: 600;
+            font-display: swap;
+            src: url('recursos/dancing-script-600.woff2') format('woff2');
+        }
+
         :root {
             --bg: #0d1117;
             --card: #161b22;
             --blue: #0072ce;
-            --blue-light: #4da3ff;
             --text: #e6edf3;
-            --muted: #8b949e;
             --border: #30363d;
+            --accent: #58a6ff;
+            --muted: #8b949e;
         }
 
         * { box-sizing: border-box; }
@@ -20,64 +31,118 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             margin: 0;
             padding-bottom: 50px;
         }
 
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
         header {
-            background: rgba(13, 17, 23, 0.95);
-            padding: 20px;
+            background: rgba(13, 17, 23, 0.98);
+            padding: 30px 20px;
             text-align: center;
             border-bottom: 2px solid var(--blue);
             position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 28px;
-            letter-spacing: 1px;
+        .main-logo {
+            max-width: 100%;
+            width: 600px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
-        header h1 span { color: var(--blue-light); }
+        .subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 10px 0 20px 0;
+        }
 
-        #count {
-            margin: 6px 0 0;
-            color: var(--muted);
-            font-size: 13px;
+        .social-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icon:hover { transform: scale(1.2); }
+
+        .controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .search-box {
-            width: 90%;
-            max-width: 450px;
-            padding: 12px 20px;
-            border-radius: 25px;
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 25px;
+            border-radius: 30px;
             border: 1px solid var(--border);
             background: #010409;
             color: white;
-            margin-top: 15px;
             font-size: 16px;
             outline: none;
         }
 
         .search-box:focus { border-color: var(--blue); }
 
-        #debug-console {
-            background: #2a1010;
-            color: #ff7b72;
-            padding: 10px;
-            font-size: 12px;
-            text-align: center;
-            display: none;
+        .sort-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-tool {
+            background: #21262d;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-tool:hover,
+        .btn-tool.active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+        }
+
+        .count {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
         }
 
         main {
-            padding: 20px;
+            padding: 40px 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             max-width: 1400px;
             margin: 0 auto;
@@ -88,15 +153,15 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
+            color: inherit;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--blue);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
         }
 
         .preview-btn {
@@ -142,17 +207,18 @@
             pointer-events: none;
         }
 
-        .preview-btn:hover::after {
+        .preview-btn:hover::after,
+        .preview-btn:focus-visible::after {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
         }
 
         .card-info {
-            padding: 14px 15px 16px;
+            padding: 15px;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             flex: 1;
         }
 
@@ -171,15 +237,15 @@
         .btn-download {
             display: inline-block;
             margin-top: auto;
-            padding: 9px 16px;
+            padding: 8px 16px;
             background: transparent;
-            color: var(--blue-light);
+            color: var(--accent);
             border: 1px solid var(--blue);
-            border-radius: 22px;
+            border-radius: 20px;
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
-            transition: background 0.2s ease, color 0.2s ease;
+            transition: 0.2s;
         }
 
         .btn-download:hover {
@@ -187,12 +253,14 @@
             color: #fff;
         }
 
-        .btn-container { text-align: center; margin-top: 30px; }
+        .card-info .btn-download { align-self: center; }
+
+        .btn-container { text-align: center; margin-top: 40px; }
 
         .btn-load {
-            padding: 12px 30px;
+            padding: 14px 40px;
             background: transparent;
-            color: var(--blue-light);
+            color: var(--blue);
             border: 2px solid var(--blue);
             border-radius: 30px;
             cursor: pointer;
@@ -201,94 +269,134 @@
             transition: 0.3s;
         }
 
-        .btn-load:hover { background: var(--blue); color: white; }
+        .btn-load:hover { background: var(--blue); color: #fff; }
 
         .hidden { display: none !important; }
 
-        /* Lightbox / full preview */
-        .lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(6px);
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--muted);
         }
 
-        .lightbox-content {
-            position: relative;
-            width: min(1200px, 96vw);
-            max-height: 94vh;
+        #debug-console {
+            background: #2a1010;
+            color: #ff7b72;
+            padding: 10px;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        /* MODAL PREVIEW */
+        #preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+
+        #preview-modal.open { display: flex; }
+
+        .modal-content {
             display: flex;
             flex-direction: column;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
-        }
-
-        .lightbox-img-wrap {
-            background: #000;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            min-height: 200px;
-            overflow: hidden;
+            max-width: 95vw;
+            max-height: 92vh;
         }
 
-        .lightbox-img-wrap img {
-            display: block;
-            width: 100%;
-            max-height: calc(94vh - 90px);
+        #modal-img {
+            max-width: 90vw;
+            max-height: calc(92vh - 90px);
+            border: 3px solid var(--blue);
+            border-radius: 8px;
             object-fit: contain;
         }
 
-        .lightbox-bar {
+        .modal-bar {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 16px;
-            padding: 14px 18px;
-            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+            margin-top: 12px;
+            text-align: center;
         }
 
-        .lightbox-bar h2 {
-            flex: 1;
+        #modal-title {
             margin: 0;
             font-size: 15px;
             font-weight: 500;
-            line-height: 1.35;
         }
 
-        .close {
+        #modal-download { margin-top: 0; }
+
+        .close-modal {
             position: absolute;
-            top: 10px;
-            right: 12px;
-            z-index: 2;
-            width: 38px;
-            height: 38px;
-            border: 0;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.65);
-            color: #fff;
-            font-size: 26px;
-            line-height: 1;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 50px;
             cursor: pointer;
-            transition: background 0.2s ease;
+            line-height: 1;
+            z-index: 2;
         }
 
-        .close:hover { background: var(--blue); }
+        .close-modal:hover { color: var(--accent); }
 
-        body.lightbox-open { overflow: hidden; }
+        body.modal-open { overflow: hidden; }
 
-        @media (max-width: 600px) {
-            .lightbox { padding: 10px; }
-            .lightbox-content { width: 100%; }
-            .lightbox-bar { flex-direction: column; align-items: stretch; }
-            .lightbox-bar .btn-download { text-align: center; }
+        @media (max-width: 640px) {
+            header {
+                position: static;
+                padding: 20px 12px;
+            }
+
+            .main-logo { width: 100%; }
+
+            .subtitle {
+                font-size: 1.2rem;
+                margin: 8px 0 15px;
+            }
+
+            .social-container {
+                gap: 16px;
+                margin-bottom: 18px;
+            }
+
+            .social-icon {
+                width: 28px;
+                height: 28px;
+            }
+
+            main {
+                padding: 25px 12px;
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 18px;
+            }
+
+            #modal-img { max-width: 92vw; max-height: calc(88vh - 100px); }
+
+            .close-modal {
+                top: 8px;
+                right: 16px;
+                font-size: 40px;
+            }
+
+            .modal-bar {
+                flex-direction: column;
+                gap: 8px;
+            }
         }
     </style>
 </head>
@@ -297,61 +405,76 @@
 <div id="debug-console"></div>
 
 <header>
-    <h1>PS4 <span>THEMES</span></h1>
-    <p id="count"></p>
-    <input type="text" id="search" class="search-box" placeholder="Escribe para buscar...">
+    <img src="recursos/titulo.png" alt="PS4 Themes" class="main-logo">
+    <p class="subtitle">Creado por KiZeo</p>
+
+    <div class="social-container">
+        <a href="https://www.youtube.com/@kizeo0/videos" target="_blank" rel="noopener" title="YouTube">
+            <img src="recursos/yt.png" alt="YouTube" class="social-icon">
+        </a>
+        <a href="https://github.com/kizeo404" target="_blank" rel="noopener" title="GitHub">
+            <img src="recursos/git.png" alt="GitHub" class="social-icon">
+        </a>
+        <a href="https://x.com/KiZeo0" target="_blank" rel="noopener" title="X">
+            <img src="recursos/x.png" alt="X" class="social-icon">
+        </a>
+    </div>
+
+    <div class="controls-wrapper">
+        <input type="text" id="search" class="search-box" placeholder="Buscar temas...">
+        <div class="sort-container">
+            <button class="btn-tool active" data-sort="AZ" type="button">🔤 A - Z</button>
+            <button class="btn-tool" data-sort="ZA" type="button">🔤 Z - A</button>
+            <button class="btn-tool" data-sort="RANDOM" type="button">🎲 Azar</button>
+        </div>
+        <p id="count" class="count"></p>
+    </div>
 </header>
+
+<div id="preview-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <span class="close-modal" id="closeModal" role="button" tabindex="0" aria-label="Cerrar">&times;</span>
+    <div class="modal-content">
+        <img id="modal-img" src="" alt="Vista previa">
+        <div class="modal-bar">
+            <h2 id="modal-title"></h2>
+            <a id="modal-download" class="btn-download" href="#" target="_blank" rel="noopener">Descargar tema</a>
+        </div>
+    </div>
+</div>
 
 <main id="gallery"></main>
 
 <div class="btn-container">
-    <button id="loadMore" class="btn-load">Cargar más temas</button>
-</div>
-
-<!-- Visor de imagen completa -->
-<div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
-    <div class="lightbox-content">
-        <button id="closeLightbox" class="close" aria-label="Cerrar">&times;</button>
-        <div class="lightbox-img-wrap">
-            <img id="lightboxImg" src="" alt="">
-        </div>
-        <div class="lightbox-bar">
-            <h2 id="lightboxTitle"></h2>
-            <a id="lightboxDownload" class="btn-download" href="#" target="_blank" rel="noopener">Descargar tema</a>
-        </div>
-    </div>
+    <button id="loadMore" class="btn-load" type="button">Cargar más temas</button>
 </div>
 
 <script>
     let allThemes = [];
     let filteredThemes = [];
-    let limit = 24;
+    let limit = 20;
+    let sortMode = 'AZ';
+    let lastFocused = null;
 
     const gallery = document.getElementById('gallery');
     const searchInput = document.getElementById('search');
     const loadMoreBtn = document.getElementById('loadMore');
-    const debug = document.getElementById('debug-console');
     const countEl = document.getElementById('count');
+    const debug = document.getElementById('debug-console');
 
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxTitle = document.getElementById('lightboxTitle');
-    const lightboxDownload = document.getElementById('lightboxDownload');
-    const closeLightboxBtn = document.getElementById('closeLightbox');
+    const modal = document.getElementById('preview-modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDownload = document.getElementById('modal-download');
+    const closeModalBtn = document.getElementById('closeModal');
 
-    let lastFocused = null;
-
-    // Codifica cada segmento de la ruta (espacios, #, ?, acentos, etc.)
     function encodePath(path) {
         return String(path).split('/').map(encodeURIComponent).join('/');
     }
 
     function updateCount() {
-        if (filteredThemes.length === allThemes.length) {
-            countEl.textContent = `${allThemes.length} temas disponibles`;
-        } else {
-            countEl.textContent = `${filteredThemes.length} de ${allThemes.length} temas`;
-        }
+        countEl.textContent = filteredThemes.length === allThemes.length
+            ? `${allThemes.length} temas disponibles`
+            : `${filteredThemes.length} de ${allThemes.length} temas`;
     }
 
     function makeCard(tema) {
@@ -369,14 +492,17 @@
         img.alt = tema.nombre;
         img.src = encodePath(tema.imagen);
         img.addEventListener('error', () => {
-            // Si el WebP falla, usa el JPG completo como respaldo.
-            if (tema.full && !img.dataset.fallback) {
+            // Si el WebP falla, intenta con el JPG completo.
+            if (!img.dataset.fallback) {
                 img.dataset.fallback = '1';
                 img.src = encodePath(tema.full);
+            } else {
+                img.onerror = null;
+                img.src = 'https://placehold.co/600x337/161b22/8b949e?text=Error';
             }
         });
         previewBtn.appendChild(img);
-        previewBtn.addEventListener('click', () => openLightbox(tema, previewBtn));
+        previewBtn.addEventListener('click', () => openPreview(tema, previewBtn));
 
         const info = document.createElement('div');
         info.className = 'card-info';
@@ -402,7 +528,7 @@
 
         if (items.length === 0) {
             const empty = document.createElement('p');
-            empty.style.cssText = 'grid-column: 1/-1; text-align: center; color: #8b949e;';
+            empty.className = 'empty';
             empty.textContent = 'No se encontraron temas.';
             gallery.appendChild(empty);
             loadMoreBtn.classList.add('hidden');
@@ -418,21 +544,57 @@
         updateCount();
     }
 
-    function openLightbox(tema, trigger) {
-        lastFocused = trigger || null;
-        lightboxTitle.textContent = tema.nombre;
-        lightboxDownload.href = tema.descarga;
-        lightboxImg.alt = `${tema.nombre} - preview completa`;
-        lightboxImg.src = encodePath(tema.full);
-        lightbox.classList.remove('hidden');
-        document.body.classList.add('lightbox-open');
-        closeLightboxBtn.focus();
+    function applySort() {
+        const collator = new Intl.Collator('es', { sensitivity: 'base' });
+
+        if (sortMode === 'AZ') {
+            filteredThemes.sort((a, b) => collator.compare(a.nombre, b.nombre));
+        } else if (sortMode === 'ZA') {
+            filteredThemes.sort((a, b) => collator.compare(b.nombre, a.nombre));
+        } else if (sortMode === 'RANDOM') {
+            for (let i = filteredThemes.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [filteredThemes[i], filteredThemes[j]] = [filteredThemes[j], filteredThemes[i]];
+            }
+        }
     }
 
-    function closeLightbox() {
-        lightbox.classList.add('hidden');
-        document.body.classList.remove('lightbox-open');
-        lightboxImg.removeAttribute('src');
+    function applyFilter() {
+        const text = searchInput.value.toLowerCase().trim();
+        filteredThemes = text
+            ? allThemes.filter(t => t.nombre.toLowerCase().includes(text))
+            : [...allThemes];
+        applySort();
+        limit = 20;
+        render();
+    }
+
+    function setSort(mode) {
+        sortMode = mode;
+        document.querySelectorAll('.btn-tool').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.sort === mode);
+        });
+        applySort();
+        limit = 20;
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openPreview(tema, trigger) {
+        lastFocused = trigger || null;
+        modalTitle.textContent = tema.nombre;
+        modalDownload.href = tema.descarga;
+        modalImg.alt = `${tema.nombre} - vista previa completa`;
+        modalImg.src = encodePath(tema.full);
+        modal.classList.add('open');
+        document.body.classList.add('modal-open');
+        closeModalBtn.focus();
+    }
+
+    function closePreview() {
+        modal.classList.remove('open');
+        document.body.classList.remove('modal-open');
+        modalImg.removeAttribute('src');
         if (lastFocused) lastFocused.focus();
         lastFocused = null;
     }
@@ -444,12 +606,14 @@
                 throw new Error(`Error ${response.status}: no se encontró temas.json.`);
             }
 
-            allThemes = await response.json();
-            if (!Array.isArray(allThemes)) {
+            const data = await response.json();
+            if (!Array.isArray(data)) {
                 throw new Error('temas.json no contiene una lista válida.');
             }
 
+            allThemes = data;
             filteredThemes = [...allThemes];
+            applySort();
             render();
         } catch (err) {
             debug.style.display = 'block';
@@ -458,24 +622,31 @@
         }
     }
 
-    searchInput.addEventListener('input', (e) => {
-        const text = e.target.value.toLowerCase().trim();
-        filteredThemes = allThemes.filter(t => t.nombre.toLowerCase().includes(text));
-        limit = 24;
-        render();
+    searchInput.addEventListener('input', applyFilter);
+
+    document.querySelectorAll('.btn-tool').forEach(btn => {
+        btn.addEventListener('click', () => setSort(btn.dataset.sort));
     });
 
     loadMoreBtn.addEventListener('click', () => {
-        limit += 24;
+        limit += 20;
         render();
     });
 
-    closeLightboxBtn.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
+    closeModalBtn.addEventListener('click', closePreview);
+    closeModalBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            closePreview();
+        }
     });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closePreview();
+    });
+
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) closeLightbox();
+        if (e.key === 'Escape' && modal.classList.contains('open')) closePreview();
     });
 
     init();
