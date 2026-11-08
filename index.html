@@ -725,7 +725,7 @@
     </div>
 
     <div class="controls-wrapper">
-        <input type="text" id="search" class="search-box" placeholder="Buscar temas...">
+        <input type="text" id="search" class="search-box" placeholder="Buscar temas..." autocomplete="off" spellcheck="false">
         <div class="filter-container" role="group" aria-label="Filtrar por tipo de tema">
             <span class="filter-label">Filtrar:</span>
             <button class="btn-tool active" data-filter="ALL" type="button" aria-pressed="true">Todos</button>
@@ -982,7 +982,22 @@
     // El logo siempre recarga la página para volver al inicio.
     document.getElementById('logoLink').addEventListener('click', (e) => {
         e.preventDefault();
+        // Limpia la búsqueda antes de recargar para que el navegador no la restaure.
+        searchInput.value = '';
+        typeFilter = 'ALL';
         window.location.reload();
+    });
+
+    // Algunos navegadores restauran el texto del buscador al recargar: lo limpiamos
+    // ahora y un instante después, por si la restauración ocurre tarde.
+    function clearSearchField() {
+        searchInput.value = '';
+    }
+
+    window.addEventListener('pageshow', () => {
+        clearSearchField();
+        requestAnimationFrame(clearSearchField);
+        setTimeout(clearSearchField, 120);
     });
 
     loadMoreBtn.addEventListener('click', () => {
