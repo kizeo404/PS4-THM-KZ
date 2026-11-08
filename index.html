@@ -28,12 +28,17 @@
 
         * { box-sizing: border-box; }
 
+        html { scroll-behavior: smooth; }
+
         body {
             background-color: var(--bg);
             color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             margin: 0;
             padding-bottom: 50px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
         button:focus-visible,
@@ -43,87 +48,189 @@
             outline-offset: 2px;
         }
 
+        /* ---------- Fondo animado ---------- */
+        .bg-scene {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 50% -10%, rgba(0, 114, 206, 0.20), transparent 55%),
+                radial-gradient(ellipse at 88% 18%, rgba(110, 64, 201, 0.14), transparent 50%),
+                #0d1117;
+        }
+
+        .bg-scene::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 42%, transparent 42%, rgba(4, 7, 11, 0.55) 100%);
+        }
+
+        .bg-aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.30;
+            will-change: transform;
+        }
+
+        .bg-aurora-1 {
+            width: 55vw;
+            height: 55vw;
+            left: -14vw;
+            top: -20vw;
+            background: #0072ce;
+            animation: aurora-1 26s ease-in-out infinite alternate;
+        }
+
+        .bg-aurora-2 {
+            width: 46vw;
+            height: 46vw;
+            right: -12vw;
+            top: -6vh;
+            background: #6e40c9;
+            animation: aurora-2 32s ease-in-out infinite alternate;
+        }
+
+        @keyframes aurora-1 {
+            from { transform: translate3d(0, 0, 0) scale(1); }
+            to   { transform: translate3d(8vw, 7vh, 0) scale(1.18); }
+        }
+
+        @keyframes aurora-2 {
+            from { transform: translate3d(0, 0, 0) scale(1.12); }
+            to   { transform: translate3d(-7vw, 9vh, 0) scale(0.94); }
+        }
+
+        #waves-canvas,
+        #rain-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #waves-canvas {
+            filter: blur(30px) saturate(140%);
+            opacity: 0.62;
+        }
+
+        #rain-canvas { opacity: 0.55; }
+
+        /* ---------- Cabecera compacta ---------- */
         header {
-            background: rgba(13, 17, 23, 0.98);
-            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+            padding: 14px 20px 16px;
             text-align: center;
-            border-bottom: 2px solid var(--blue);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 114, 206, 0.55);
+            background: linear-gradient(180deg, rgba(13, 17, 23, 0.90) 0%, rgba(13, 17, 23, 0.55) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .main-logo {
             max-width: 100%;
-            width: 600px;
+            width: clamp(210px, 24vw, 300px);
             height: auto;
             display: block;
             margin: 0 auto;
+            filter: drop-shadow(0 8px 22px rgba(0, 114, 206, 0.28));
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin: 4px 0 12px;
         }
 
         .subtitle {
             font-family: 'Dancing Script', cursive;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.2;
             color: var(--accent);
-            margin: 10px 0 20px 0;
+            margin: 0;
         }
 
         .social-container {
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 25px;
+            align-items: center;
+            gap: 12px;
         }
 
         .social-icon {
-            width: 32px;
-            height: 32px;
-            transition: transform 0.3s ease;
+            width: 22px;
+            height: 22px;
+            opacity: 0.85;
+            transition: transform 0.25s ease, opacity 0.25s ease, filter 0.25s ease;
         }
 
-        .social-icon:hover { transform: scale(1.2); }
+        .social-icon:hover {
+            transform: scale(1.18);
+            opacity: 1;
+            filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.6));
+        }
 
         .controls-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             max-width: 800px;
             margin: 0 auto;
         }
 
         .search-box {
             width: 100%;
-            max-width: 500px;
-            padding: 12px 25px;
+            max-width: 430px;
+            padding: 10px 20px;
             border-radius: 30px;
-            border: 1px solid var(--border);
-            background: #010409;
+            border: 1px solid rgba(88, 166, 255, 0.20);
+            background: rgba(1, 4, 9, 0.65);
             color: white;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
-        .search-box:focus { border-color: var(--blue); }
+        .search-box::placeholder { color: #6e7681; }
 
-        .sort-container {
+        .search-box:focus {
+            border-color: var(--blue);
+            background: rgba(1, 4, 9, 0.88);
+            box-shadow: 0 0 0 3px rgba(0, 114, 206, 0.18);
+        }
+
+        .filter-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
             flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
         }
 
         .btn-tool {
-            background: #21262d;
+            background: rgba(33, 38, 45, 0.78);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 8px 15px;
-            border-radius: 8px;
+            padding: 7px 16px;
+            border-radius: 999px;
             cursor: pointer;
-            transition: 0.2s;
-            font-size: 14px;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            font-size: 13px;
         }
 
         .btn-tool:hover,
@@ -133,35 +240,43 @@
             color: #fff;
         }
 
+        .btn-tool.active { box-shadow: 0 0 18px rgba(0, 114, 206, 0.45); }
+
         .count {
             margin: 0;
             color: var(--muted);
-            font-size: 13px;
+            font-size: 12px;
+            letter-spacing: 0.02em;
         }
 
+        /* ---------- Galería ---------- */
         main {
-            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+            padding: 26px 20px 12px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 22px;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(22, 27, 34, 0.97), rgba(15, 20, 27, 0.97));
+            border: 1px solid rgba(88, 166, 255, 0.12);
+            border-radius: 14px;
             overflow: hidden;
             color: inherit;
-            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: var(--blue);
+            border-color: rgba(0, 114, 206, 0.75);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 114, 206, 0.15);
         }
 
         .preview-btn {
@@ -186,7 +301,7 @@
 
         .preview-btn:hover img {
             transform: scale(1.04);
-            opacity: 0.85;
+            opacity: 0.88;
         }
 
         .preview-btn::after {
@@ -205,6 +320,7 @@
             opacity: 0;
             transition: opacity 0.25s ease, transform 0.25s ease;
             pointer-events: none;
+            white-space: nowrap;
         }
 
         .preview-btn:hover::after,
@@ -214,11 +330,11 @@
         }
 
         .card-info {
-            padding: 15px;
+            padding: 14px 15px 16px;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             flex: 1;
         }
 
@@ -237,7 +353,7 @@
         .btn-download {
             display: inline-block;
             margin-top: auto;
-            padding: 8px 16px;
+            padding: 8px 18px;
             background: transparent;
             color: var(--accent);
             border: 1px solid var(--blue);
@@ -245,31 +361,43 @@
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
-            transition: 0.2s;
+            transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn-download:hover {
             background: var(--blue);
             color: #fff;
+            box-shadow: 0 0 18px rgba(0, 114, 206, 0.4);
         }
 
         .card-info .btn-download { align-self: center; }
 
-        .btn-container { text-align: center; margin-top: 40px; }
+        .btn-container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin: 30px 0 20px;
+        }
 
         .btn-load {
-            padding: 14px 40px;
-            background: transparent;
-            color: var(--blue);
+            padding: 12px 36px;
+            background: rgba(13, 17, 23, 0.55);
+            color: var(--accent);
             border: 2px solid var(--blue);
             border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
             font-size: 15px;
-            transition: 0.3s;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .btn-load:hover { background: var(--blue); color: #fff; }
+        .btn-load:hover {
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 0 26px rgba(0, 114, 206, 0.45);
+        }
 
         .hidden { display: none !important; }
 
@@ -280,6 +408,8 @@
         }
 
         #debug-console {
+            position: relative;
+            z-index: 2;
             background: #2a1010;
             color: #ff7b72;
             padding: 10px;
@@ -288,7 +418,7 @@
             display: none;
         }
 
-        /* MODAL PREVIEW */
+        /* ---------- Visor de preview ---------- */
         #preview-modal {
             display: none;
             position: fixed;
@@ -296,12 +426,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(5, 8, 12, 0.92);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             padding: 20px;
         }
 
@@ -318,9 +448,10 @@
         #modal-img {
             max-width: 90vw;
             max-height: calc(92vh - 90px);
-            border: 3px solid var(--blue);
-            border-radius: 8px;
+            border: 2px solid rgba(0, 114, 206, 0.85);
+            border-radius: 10px;
             object-fit: contain;
+            box-shadow: 0 0 60px rgba(0, 114, 206, 0.22);
         }
 
         .modal-bar {
@@ -343,54 +474,69 @@
 
         .close-modal {
             position: absolute;
-            top: 20px;
-            right: 30px;
+            top: 18px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             color: white;
-            font-size: 50px;
-            cursor: pointer;
+            font-size: 36px;
             line-height: 1;
+            cursor: pointer;
             z-index: 2;
+            transition: background 0.2s ease, border-color 0.2s ease;
         }
 
-        .close-modal:hover { color: var(--accent); }
+        .close-modal:hover {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
 
         body.modal-open { overflow: hidden; }
 
         @media (max-width: 640px) {
-            header {
-                position: static;
-                padding: 20px 12px;
+            header { padding: 12px 12px 14px; }
+
+            .main-logo { width: 210px; }
+
+            .header-meta {
+                gap: 10px;
+                margin: 3px 0 10px;
             }
 
-            .main-logo { width: 100%; }
+            .subtitle { font-size: 1rem; }
 
-            .subtitle {
-                font-size: 1.2rem;
-                margin: 8px 0 15px;
-            }
-
-            .social-container {
-                gap: 16px;
-                margin-bottom: 18px;
-            }
+            .social-container { gap: 10px; }
 
             .social-icon {
-                width: 28px;
-                height: 28px;
+                width: 20px;
+                height: 20px;
+            }
+
+            .btn-tool {
+                padding: 6px 12px;
+                font-size: 12px;
             }
 
             main {
-                padding: 25px 12px;
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-                gap: 18px;
+                padding: 20px 12px 10px;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 16px;
             }
 
             #modal-img { max-width: 92vw; max-height: calc(88vh - 100px); }
 
             .close-modal {
                 top: 8px;
-                right: 16px;
-                font-size: 40px;
+                right: 12px;
+                width: 38px;
+                height: 38px;
+                font-size: 30px;
             }
 
             .modal-bar {
@@ -398,36 +544,51 @@
                 gap: 8px;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .bg-aurora { animation: none; }
+        }
     </style>
 </head>
 <body>
+
+<div class="bg-scene" aria-hidden="true">
+    <div class="bg-aurora bg-aurora-1"></div>
+    <div class="bg-aurora bg-aurora-2"></div>
+    <canvas id="waves-canvas"></canvas>
+    <canvas id="rain-canvas"></canvas>
+</div>
 
 <div id="debug-console"></div>
 
 <header>
     <img src="recursos/titulo.png" alt="PS4 Themes" class="main-logo">
-    <p class="subtitle">Creado por KiZeo</p>
 
-    <div class="social-container">
-        <a href="https://www.youtube.com/@kizeo0/videos" target="_blank" rel="noopener" title="YouTube">
-            <img src="recursos/yt.png" alt="YouTube" class="social-icon">
-        </a>
-        <a href="https://github.com/kizeo404" target="_blank" rel="noopener" title="GitHub">
-            <img src="recursos/git.png" alt="GitHub" class="social-icon">
-        </a>
-        <a href="https://x.com/KiZeo0" target="_blank" rel="noopener" title="X">
-            <img src="recursos/x.png" alt="X" class="social-icon">
-        </a>
+    <div class="header-meta">
+        <p class="subtitle">Creado por KiZeo</p>
+        <div class="social-container">
+            <a href="https://www.youtube.com/@kizeo0/videos" target="_blank" rel="noopener" title="YouTube">
+                <img src="recursos/yt.png" alt="YouTube" class="social-icon">
+            </a>
+            <a href="https://github.com/kizeo404" target="_blank" rel="noopener" title="GitHub">
+                <img src="recursos/git.png" alt="GitHub" class="social-icon">
+            </a>
+            <a href="https://x.com/KiZeo0" target="_blank" rel="noopener" title="X">
+                <img src="recursos/x.png" alt="X" class="social-icon">
+            </a>
+        </div>
     </div>
 
     <div class="controls-wrapper">
         <input type="text" id="search" class="search-box" placeholder="Buscar temas...">
-        <div class="sort-container">
-            <button class="btn-tool active" data-sort="AZ" type="button">🔤 A - Z</button>
-            <button class="btn-tool" data-sort="ZA" type="button">🔤 Z - A</button>
-            <button class="btn-tool" data-sort="RANDOM" type="button">🎲 Azar</button>
+        <div class="filter-container" role="group" aria-label="Filtrar por tipo de tema">
+            <span class="filter-label">Filtrar:</span>
+            <button class="btn-tool active" data-filter="ALL" type="button" aria-pressed="true">Todos</button>
+            <button class="btn-tool" data-filter="DYNAMIC" type="button" aria-pressed="false" title="Temas con Dynamic o Slide N' Go">Dinámico</button>
+            <button class="btn-tool" data-filter="STATIC" type="button" aria-pressed="false" title="Temas sin animación">Estático</button>
         </div>
-        <p id="count" class="count"></p>
+        <p id="count" class="count" aria-live="polite"></p>
     </div>
 </header>
 
@@ -452,7 +613,7 @@
     let allThemes = [];
     let filteredThemes = [];
     let limit = 20;
-    let sortMode = 'AZ';
+    let typeFilter = 'ALL';
     let lastFocused = null;
 
     const gallery = document.getElementById('gallery');
@@ -467,14 +628,34 @@
     const modalDownload = document.getElementById('modal-download');
     const closeModalBtn = document.getElementById('closeModal');
 
+    const collator = new Intl.Collator('es', { sensitivity: 'base' });
+
     function encodePath(path) {
         return String(path).split('/').map(encodeURIComponent).join('/');
     }
 
+    function normalizeText(text) {
+        return String(text)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    // Dinámico = temas con "Dynamic" o "Slide N' Go" en el nombre.
+    function isDynamic(tema) {
+        return /dynamic|slide/.test(normalizeText(tema.nombre));
+    }
+
     function updateCount() {
-        countEl.textContent = filteredThemes.length === allThemes.length
-            ? `${allThemes.length} temas disponibles`
-            : `${filteredThemes.length} de ${allThemes.length} temas`;
+        if (filteredThemes.length === allThemes.length) {
+            countEl.textContent = `${allThemes.length} temas disponibles`;
+        } else if (typeFilter === 'DYNAMIC') {
+            countEl.textContent = `${filteredThemes.length} temas dinámicos`;
+        } else if (typeFilter === 'STATIC') {
+            countEl.textContent = `${filteredThemes.length} temas estáticos`;
+        } else {
+            countEl.textContent = `${filteredThemes.length} de ${allThemes.length} temas`;
+        }
     }
 
     function makeCard(tema) {
@@ -544,39 +725,29 @@
         updateCount();
     }
 
-    function applySort() {
-        const collator = new Intl.Collator('es', { sensitivity: 'base' });
-
-        if (sortMode === 'AZ') {
-            filteredThemes.sort((a, b) => collator.compare(a.nombre, b.nombre));
-        } else if (sortMode === 'ZA') {
-            filteredThemes.sort((a, b) => collator.compare(b.nombre, a.nombre));
-        } else if (sortMode === 'RANDOM') {
-            for (let i = filteredThemes.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [filteredThemes[i], filteredThemes[j]] = [filteredThemes[j], filteredThemes[i]];
-            }
-        }
-    }
-
     function applyFilter() {
-        const text = searchInput.value.toLowerCase().trim();
-        filteredThemes = text
-            ? allThemes.filter(t => t.nombre.toLowerCase().includes(text))
-            : [...allThemes];
-        applySort();
+        const text = normalizeText(searchInput.value.trim());
+
+        filteredThemes = allThemes.filter(t => {
+            const matchesText = !text || normalizeText(t.nombre).includes(text);
+            const matchesType = typeFilter === 'ALL'
+                || (typeFilter === 'DYNAMIC' ? isDynamic(t) : !isDynamic(t));
+            return matchesText && matchesType;
+        });
+
+        filteredThemes.sort((a, b) => collator.compare(a.nombre, b.nombre));
         limit = 20;
         render();
     }
 
-    function setSort(mode) {
-        sortMode = mode;
+    function setTypeFilter(mode) {
+        typeFilter = mode;
         document.querySelectorAll('.btn-tool').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.sort === mode);
+            const active = btn.dataset.filter === mode;
+            btn.classList.toggle('active', active);
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
-        applySort();
-        limit = 20;
-        render();
+        applyFilter();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -612,9 +783,7 @@
             }
 
             allThemes = data;
-            filteredThemes = [...allThemes];
-            applySort();
-            render();
+            applyFilter();
         } catch (err) {
             debug.style.display = 'block';
             debug.textContent = 'ALERTA: ' + err.message;
@@ -625,7 +794,7 @@
     searchInput.addEventListener('input', applyFilter);
 
     document.querySelectorAll('.btn-tool').forEach(btn => {
-        btn.addEventListener('click', () => setSort(btn.dataset.sort));
+        btn.addEventListener('click', () => setTypeFilter(btn.dataset.filter));
     });
 
     loadMoreBtn.addEventListener('click', () => {
@@ -650,6 +819,134 @@
     });
 
     init();
+</script>
+
+<script>
+    // Fondo decorativo: olas difuminadas + lluvia sutil.
+    (function initBackground() {
+        const wavesCanvas = document.getElementById('waves-canvas');
+        const rainCanvas = document.getElementById('rain-canvas');
+        if (!wavesCanvas || !rainCanvas) return;
+
+        let wavesCtx;
+        let rainCtx;
+        try {
+            wavesCtx = wavesCanvas.getContext('2d');
+            rainCtx = rainCanvas.getContext('2d');
+        } catch (err) {
+            return;
+        }
+        if (!wavesCtx || !rainCtx) return;
+
+        const reduceMotion = window.matchMedia
+            ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            : false;
+
+        let width = 0;
+        let height = 0;
+        let rainDrops = [];
+        let lastTime = 0;
+
+        function resize() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            width = window.innerWidth;
+            height = window.innerHeight;
+
+            [wavesCanvas, rainCanvas].forEach(canvas => {
+                canvas.width = Math.max(1, Math.floor(width * dpr));
+                canvas.height = Math.max(1, Math.floor(height * dpr));
+            });
+
+            wavesCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            rainCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            createRain();
+        }
+
+        function createRain() {
+            const count = Math.min(170, Math.max(40, Math.round(width / 11)));
+            rainDrops = Array.from({ length: count }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                len: 10 + Math.random() * 16,
+                speed: 1.6 + Math.random() * 3.4,
+                drift: 0.16 + Math.random() * 0.3,
+                alpha: 0.07 + Math.random() * 0.16
+            }));
+        }
+
+        function drawWaves(time) {
+            wavesCtx.clearRect(0, 0, width, height);
+            const t = time * 0.00016;
+
+            const layers = [
+                { base: height * 0.66, amp: 32, freq: 0.0042, speed: 1.00, phase: 0.0, top: 'rgba(0, 114, 206, 0.45)', bottom: 'rgba(0, 114, 206, 0)' },
+                { base: height * 0.77, amp: 44, freq: 0.0033, speed: -0.75, phase: 2.1, top: 'rgba(77, 163, 255, 0.32)', bottom: 'rgba(77, 163, 255, 0)' },
+                { base: height * 0.88, amp: 28, freq: 0.0052, speed: 1.35, phase: 4.2, top: 'rgba(110, 64, 201, 0.32)', bottom: 'rgba(110, 64, 201, 0)' }
+            ];
+
+            for (const layer of layers) {
+                const gradient = wavesCtx.createLinearGradient(0, layer.base - layer.amp * 2, 0, height);
+                gradient.addColorStop(0, layer.top);
+                gradient.addColorStop(1, layer.bottom);
+
+                wavesCtx.beginPath();
+                wavesCtx.moveTo(0, height);
+                for (let x = 0; x <= width + 10; x += 10) {
+                    const y = layer.base
+                        + Math.sin(x * layer.freq + t * layer.speed + layer.phase) * layer.amp
+                        + Math.sin(x * layer.freq * 0.45 - t * layer.speed * 0.6 + layer.phase) * layer.amp * 0.45;
+                    wavesCtx.lineTo(x, y);
+                }
+                wavesCtx.lineTo(width, height);
+                wavesCtx.closePath();
+                wavesCtx.fillStyle = gradient;
+                wavesCtx.fill();
+            }
+        }
+
+        function drawRain(delta) {
+            rainCtx.clearRect(0, 0, width, height);
+            rainCtx.lineWidth = 1;
+            rainCtx.lineCap = 'round';
+            rainCtx.strokeStyle = 'rgb(173, 216, 255)';
+
+            for (const drop of rainDrops) {
+                rainCtx.globalAlpha = drop.alpha;
+                rainCtx.beginPath();
+                rainCtx.moveTo(drop.x, drop.y);
+                rainCtx.lineTo(drop.x - drop.drift * drop.len, drop.y + drop.len);
+                rainCtx.stroke();
+
+                drop.y += drop.speed * delta;
+                drop.x -= drop.drift * drop.speed * delta * 0.6;
+
+                if (drop.y > height + 24) {
+                    drop.y = -24;
+                    drop.x = Math.random() * width;
+                }
+                if (drop.x < -24) drop.x = width + 24;
+            }
+            rainCtx.globalAlpha = 1;
+        }
+
+        function frame(now) {
+            const delta = lastTime ? Math.min((now - lastTime) / 16.667, 2.5) : 1;
+            lastTime = now;
+            drawWaves(now);
+            drawRain(delta);
+            requestAnimationFrame(frame);
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        if (reduceMotion) {
+            drawWaves(0);
+            drawRain(0);
+        } else {
+            requestAnimationFrame(frame);
+        }
+    })();
 </script>
 </body>
 </html>
