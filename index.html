@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS4 Themes Library</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --blue: #0072ce;
+            --blue-light: #4da3ff;
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --border: #30363d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background: rgba(13, 17, 23, 0.95);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--blue);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        header h1 span { color: var(--blue-light); }
+
+        #count {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .search-box {
+            width: 90%;
+            max-width: 450px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            background: #010409;
+            color: white;
+            margin-top: 15px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box:focus { border-color: var(--blue); }
+
+        #debug-console {
+            background: #2a1010;
+            color: #ff7b72;
+            padding: 10px;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        main {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--blue);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .preview-btn {
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 0;
+            border: 0;
+            background: #000;
+            cursor: zoom-in;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+        }
+
+        .preview-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s ease, opacity 0.35s ease;
+        }
+
+        .preview-btn:hover img {
+            transform: scale(1.04);
+            opacity: 0.85;
+        }
+
+        .preview-btn::after {
+            content: "Ver preview";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+        }
+
+        .preview-btn:hover::after {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .card-info {
+            padding: 14px 15px 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .card-info h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            height: 40px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .btn-download {
+            display: inline-block;
+            margin-top: auto;
+            padding: 9px 16px;
+            background: transparent;
+            color: var(--blue-light);
+            border: 1px solid var(--blue);
+            border-radius: 22px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .btn-download:hover {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .btn-container { text-align: center; margin-top: 30px; }
+
+        .btn-load {
+            padding: 12px 30px;
+            background: transparent;
+            color: var(--blue-light);
+            border: 2px solid var(--blue);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .btn-load:hover { background: var(--blue); color: white; }
+
+        .hidden { display: none !important; }
+
+        /* Lightbox / full preview */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(6px);
+        }
+
+        .lightbox-content {
+            position: relative;
+            width: min(1200px, 96vw);
+            max-height: 94vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+        }
+
+        .lightbox-img-wrap {
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            overflow: hidden;
+        }
+
+        .lightbox-img-wrap img {
+            display: block;
+            width: 100%;
+            max-height: calc(94vh - 90px);
+            object-fit: contain;
+        }
+
+        .lightbox-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            border-top: 1px solid var(--border);
+        }
+
+        .lightbox-bar h2 {
+            flex: 1;
+            margin: 0;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.35;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            z-index: 2;
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            font-size: 26px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .close:hover { background: var(--blue); }
+
+        body.lightbox-open { overflow: hidden; }
+
+        @media (max-width: 600px) {
+            .lightbox { padding: 10px; }
+            .lightbox-content { width: 100%; }
+            .lightbox-bar { flex-direction: column; align-items: stretch; }
+            .lightbox-bar .btn-download { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="debug-console"></div>
+
+<header>
+    <h1>PS4 <span>THEMES</span></h1>
+    <p id="count"></p>
+    <input type="text" id="search" class="search-box" placeholder="Escribe para buscar...">
+</header>
+
+<main id="gallery"></main>
+
+<div class="btn-container">
+    <button id="loadMore" class="btn-load">Cargar más temas</button>
+</div>
+
+<!-- Visor de imagen completa -->
+<div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+    <div class="lightbox-content">
+        <button id="closeLightbox" class="close" aria-label="Cerrar">&times;</button>
+        <div class="lightbox-img-wrap">
+            <img id="lightboxImg" src="" alt="">
+        </div>
+        <div class="lightbox-bar">
+            <h2 id="lightboxTitle"></h2>
+            <a id="lightboxDownload" class="btn-download" href="#" target="_blank" rel="noopener">Descargar tema</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let allThemes = [];
+    let filteredThemes = [];
+    let limit = 24;
+
+    const gallery = document.getElementById('gallery');
+    const searchInput = document.getElementById('search');
+    const loadMoreBtn = document.getElementById('loadMore');
+    const debug = document.getElementById('debug-console');
+    const countEl = document.getElementById('count');
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxTitle = document.getElementById('lightboxTitle');
+    const lightboxDownload = document.getElementById('lightboxDownload');
+    const closeLightboxBtn = document.getElementById('closeLightbox');
+
+    let lastFocused = null;
+
+    // Codifica cada segmento de la ruta (espacios, #, ?, acentos, etc.)
+    function encodePath(path) {
+        return String(path).split('/').map(encodeURIComponent).join('/');
+    }
+
+    function updateCount() {
+        if (filteredThemes.length === allThemes.length) {
+            countEl.textContent = `${allThemes.length} temas disponibles`;
+        } else {
+            countEl.textContent = `${filteredThemes.length} de ${allThemes.length} temas`;
+        }
+    }
+
+    function makeCard(tema) {
+        const card = document.createElement('article');
+        card.className = 'card';
+
+        const previewBtn = document.createElement('button');
+        previewBtn.type = 'button';
+        previewBtn.className = 'preview-btn';
+        previewBtn.setAttribute('aria-label', `Ver preview de ${tema.nombre}`);
+
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.alt = tema.nombre;
+        img.src = encodePath(tema.imagen);
+        img.addEventListener('error', () => {
+            // Si el WebP falla, usa el JPG completo como respaldo.
+            if (tema.full && !img.dataset.fallback) {
+                img.dataset.fallback = '1';
+                img.src = encodePath(tema.full);
+            }
+        });
+        previewBtn.appendChild(img);
+        previewBtn.addEventListener('click', () => openLightbox(tema, previewBtn));
+
+        const info = document.createElement('div');
+        info.className = 'card-info';
+
+        const title = document.createElement('h3');
+        title.textContent = tema.nombre;
+
+        const download = document.createElement('a');
+        download.className = 'btn-download';
+        download.href = tema.descarga;
+        download.target = '_blank';
+        download.rel = 'noopener';
+        download.textContent = 'Descargar tema';
+
+        info.append(title, download);
+        card.append(previewBtn, info);
+        return card;
+    }
+
+    function render() {
+        gallery.innerHTML = '';
+        const items = filteredThemes.slice(0, limit);
+
+        if (items.length === 0) {
+            const empty = document.createElement('p');
+            empty.style.cssText = 'grid-column: 1/-1; text-align: center; color: #8b949e;';
+            empty.textContent = 'No se encontraron temas.';
+            gallery.appendChild(empty);
+            loadMoreBtn.classList.add('hidden');
+            updateCount();
+            return;
+        }
+
+        const frag = document.createDocumentFragment();
+        items.forEach(tema => frag.appendChild(makeCard(tema)));
+        gallery.appendChild(frag);
+
+        loadMoreBtn.classList.toggle('hidden', limit >= filteredThemes.length);
+        updateCount();
+    }
+
+    function openLightbox(tema, trigger) {
+        lastFocused = trigger || null;
+        lightboxTitle.textContent = tema.nombre;
+        lightboxDownload.href = tema.descarga;
+        lightboxImg.alt = `${tema.nombre} - preview completa`;
+        lightboxImg.src = encodePath(tema.full);
+        lightbox.classList.remove('hidden');
+        document.body.classList.add('lightbox-open');
+        closeLightboxBtn.focus();
+    }
+
+    function closeLightbox() {
+        lightbox.classList.add('hidden');
+        document.body.classList.remove('lightbox-open');
+        lightboxImg.removeAttribute('src');
+        if (lastFocused) lastFocused.focus();
+        lastFocused = null;
+    }
+
+    async function init() {
+        try {
+            const response = await fetch('./temas.json');
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: no se encontró temas.json.`);
+            }
+
+            allThemes = await response.json();
+            if (!Array.isArray(allThemes)) {
+                throw new Error('temas.json no contiene una lista válida.');
+            }
+
+            filteredThemes = [...allThemes];
+            render();
+        } catch (err) {
+            debug.style.display = 'block';
+            debug.textContent = 'ALERTA: ' + err.message;
+            console.error(err);
+        }
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        const text = e.target.value.toLowerCase().trim();
+        filteredThemes = allThemes.filter(t => t.nombre.toLowerCase().includes(text));
+        limit = 24;
+        render();
+    });
+
+    loadMoreBtn.addEventListener('click', () => {
+        limit += 24;
+        render();
+    });
+
+    closeLightboxBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) closeLightbox();
+    });
+
+    init();
+</script>
+</body>
+</html>
